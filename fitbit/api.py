@@ -544,7 +544,6 @@ class Fitbit(object):
             base_date=self._get_date_string(base_date),
             end=end
         )
-        print("Making a request to ", url)
         return self.make_request(url)
 
     def intraday_time_series(self, resource, base_date='today', detail_level='1min', start_time=None, end_time=None):
@@ -628,6 +627,7 @@ class Fitbit(object):
                 *self._get_common_args(),
                 resource=resource,
                 base_date=self._get_date_string(base_date),
+                end_date=self._get_date_string(end_date),
                 detail_level=detail_level
             )
 
@@ -671,7 +671,7 @@ class Fitbit(object):
             base_url = "{0}/{1}/user/{2}/sleep/date/{date}/{end_date}.json"
 
         user_id_arg = user_id if user_id is not None else "-"
-        
+
         url = base_url.format(self.API_ENDPOINT, 1.2, user_id_arg, **kwargs)
 
         return self.make_request(url)        
