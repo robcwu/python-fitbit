@@ -297,10 +297,8 @@ class Fitbit(object):
         url = "{0}/{1}/user/-/profile.json".format(*self._get_common_args())
         return self.make_request(url, data)
 
-    def _get_common_args(self, api_version=None, user_id=None):
-        if not api_version:
-            api_version = self.API_VERSION
-        common_args = (self.API_ENDPOINT, api_version,)
+    def _get_common_args(self, user_id=None):
+        common_args = (self.API_ENDPOINT, self.API_VERSION,)
         if not user_id:
             user_id = '-'
         common_args += (user_id,)
@@ -672,7 +670,9 @@ class Fitbit(object):
             kwargs['end_date'] = end_date_string
             base_url = "{0}/{1}/user/{2}/sleep/date/{date}/{end_date}.json"
 
-        url = base_url.format(*self._get_common_args(api_version=1.2, user_id=user_id), **kwargs)
+        user_id_arg = user_id if user_id is not None else "-"
+        
+        url = base_url.format(self.API_ENDPOINT, 1.2, user_id_arg, **kwargs)
 
         return self.make_request(url)        
 
