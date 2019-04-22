@@ -297,8 +297,10 @@ class Fitbit(object):
         url = "{0}/{1}/user/-/profile.json".format(*self._get_common_args())
         return self.make_request(url, data)
 
-    def _get_common_args(self, user_id=None):
-        common_args = (self.API_ENDPOINT, self.API_VERSION,)
+    def _get_common_args(self, api_version=None, user_id=None):
+        if not api_version:
+            api_version = self.API_VERSION
+        common_args = (self.API_ENDPOINT, api_version,)
         if not user_id:
             user_id = '-'
         common_args += (user_id,)
@@ -589,6 +591,89 @@ class Fitbit(object):
         url = url + '.json'
 
         return self.make_request(url)
+
+    def intraday_time_series_daterange(self, resource, base_date='today', end_date='today', detail_level='1min', start_time=None, end_time=None):
+        """
+        The intraday time series extends the functionality of the regular time series, but returning data at a
+        more granular level for a single day, defaulting to 1 minute intervals. To access this feature, one must
+        fill out the Private Support form here (see https://dev.fitbit.com/docs/help/).
+        For details on the resources available and more information on how to get access, see:
+
+        https://dev.fitbit.com/docs/activity/#get-activity-intraday-time-series
+        """
+
+        # Check that the time range is valid
+        time_test = lambda t: not (t is None or isinstance(t, str) and not t)
+        time_map = list(map(time_test, [start_time, end_time]))
+        if not all(time_map) and any(time_map):
+            raise TypeError('You must provide both the end and start time or neither')
+
+        """
+        Per
+        https://dev.fitbit.com/docs/activity/#get-activity-intraday-time-series
+        the detail-level is now (OAuth 2.0 ):
+        either "1min" or "15min" (optional). "1sec" for heart rate.
+        """
+        if not detail_level in ['1sec', '1min', '15min']:
+            raise ValueError("Period must be either '1sec', '1min', or '15min'")
+
+        if base_date == end_date:
+            url = "{0}/{1}/user/-/{resource}/date/{base_date}/1d/{detail_level}".format(
+                *self._get_common_args(),
+                resource=resource,
+                base_date=self._get_date_string(base_date),
+                detail_level=detail_level
+            )
+        else:
+            url = "{0}/{1}/user/-/{resource}/date/{base_date}/{end_date}/{detail_level}".format(
+                *self._get_common_args(),
+                resource=resource,
+                base_date=self._get_date_string(base_date),
+                detail_level=detail_level
+            )
+
+
+        if all(time_map):
+            url = url + '/time'
+            for time in [start_time, end_time]:
+                time_str = time
+                if not isinstance(time_str, str):
+                    time_str = time.strftime('%H:%M')
+                url = url + ('/%s' % (time_str))
+
+        url = url + '.json'
+
+        return self.make_request(url)
+
+    def sleep_daterange(self, date=None, end_date=None, user_id=None):
+        """
+        Retrieving sleep data with v1.2 of the API.
+
+        Arguments:
+            [date] defaults to today
+            [end_date] defaults to today
+            [user_id] defaults to current logged in user
+        
+        * https://dev.fitbit.com/build/reference/web-api/sleep/
+        """
+
+        if not date:
+            date = datetime.date.today()
+        date_string = self._get_date_string(date)
+
+
+        kwargs = {'date': date_string}
+
+        if end_date:
+            base_url = "{0}/{1}/user/{2}/sleep/date/{date}.json"
+        else:
+            end_date_string = self._get_date_string(end_date)
+            kwargs['end_date'] = end_date_string
+            base_url = "{0}/{1}/user/{2}/sleep/date/{date}/{end_date}.json"
+
+        url = base_url.format(*self._get_common_args(api_version=1.2, user_id=user_id), **kwargs)
+
+        return self.make_request(url)        
 
     def activity_stats(self, user_id=None, qualifier=''):
         """
