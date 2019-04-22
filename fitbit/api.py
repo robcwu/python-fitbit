@@ -546,6 +546,7 @@ class Fitbit(object):
             base_date=self._get_date_string(base_date),
             end=end
         )
+        print("Making a request to ", url)
         return self.make_request(url)
 
     def intraday_time_series(self, resource, base_date='today', detail_level='1min', start_time=None, end_time=None):
