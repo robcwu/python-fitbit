@@ -664,11 +664,11 @@ class Fitbit(object):
         kwargs = {'date': date_string}
 
         if end_date:
-            base_url = "{0}/{1}/user/{2}/sleep/date/{date}.json"
-        else:
             end_date_string = self._get_date_string(end_date)
             kwargs['end_date'] = end_date_string
             base_url = "{0}/{1}/user/{2}/sleep/date/{date}/{end_date}.json"
+        else:
+            base_url = "{0}/{1}/user/{2}/sleep/date/{date}.json"
 
         user_id_arg = user_id if user_id is not None else "-"
 
