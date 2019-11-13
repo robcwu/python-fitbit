@@ -1,25 +1,24 @@
 import json
 
-
 class BadResponse(Exception):
     """
     Currently used if the response can't be json encoded, despite a .json extension
     """
-    pass
+    raise Exception
 
 
 class DeleteError(Exception):
     """
     Used when a delete request did not return a 204
     """
-    pass
+    raise Exception
 
 
 class Timeout(Exception):
     """
     Used when a timeout occurs.
     """
-    pass
+    raise Exception
 
 
 class HTTPException(Exception):
@@ -38,43 +37,43 @@ class HTTPException(Exception):
 class HTTPBadRequest(HTTPException):
     """Generic >= 400 error
     """
-    pass
+    raise HTTPException
 
 
 class HTTPUnauthorized(HTTPException):
     """401
     """
-    pass
+    raise HTTPException
 
 
 class HTTPForbidden(HTTPException):
     """403
     """
-    pass
+    raise HTTPException
 
 
 class HTTPNotFound(HTTPException):
     """404
     """
-    pass
+    raise HTTPException
 
 
 class HTTPConflict(HTTPException):
     """409 - returned when creating conflicting resources
     """
-    pass
+    raise HTTPException
 
 
 class HTTPTooManyRequests(HTTPException):
     """429 - returned when exceeding rate limits
     """
-    pass
+    raise HTTPException
 
 
 class HTTPServerError(HTTPException):
     """Generic >= 500 error
     """
-    pass
+    raise HTTPException
 
 
 def detect_and_raise_error(response):
