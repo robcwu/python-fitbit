@@ -695,7 +695,7 @@ class Fitbit(object):
 
         return self.make_request(url)
 
-    def spo2(self, base_date='today', end_date='today', intraday=False):
+    def get_new_resource(self, resource, base_date='today'):
         """
         The intraday time series extends the functionality of the regular time series, but returning data at a
         more granular level for a single day, defaulting to 1 minute intervals. To access this feature, one must
@@ -709,22 +709,14 @@ class Fitbit(object):
         https://dev.fitbit.com/build/reference/web-api/intraday/get-spo2-intraday-by-interval/
         """
 
-        if base_date == end_date:
-            url = "{0}/{1}/user/-/spo2/date/{base_date}".format(
-                *self._get_common_args(),
-                base_date=self._get_date_string(base_date),
-            )
-        else:
-            url = "{0}/{1}/user/-/spo2/date/{base_date}/{end_date}".format(
-                *self._get_common_args(),
-                base_date=self._get_date_string(base_date),
-                end_date=self._get_date_string(end_date),
-            )
 
-        if intraday:
-            url = url + '/all'
+        url = "{0}/{1}/user/-/{resource}/date/{base_date}".format(
+             *self._get_common_args(),
+             resource=resource,
+             base_date=self._get_date_string(base_date)
+        )
 
-        url = url + '.json'
+        url = url + '/all.json'
 
         return self.make_request(url)
 
@@ -762,19 +754,7 @@ class Fitbit(object):
 
         return self.make_request(url)
 
-    def vo2(self, date='today', end_date=None):
 
-        date_string = self._get_date_string(date)
-
-        base_url = "{0}/{1}/user/-/cardioscore/date/{date_string}"
-
-        url = base_url.format(*self._get_common_args(),
-                              date_string=date_string)
-        if end_date:
-            end_date = self._get_date_string(end_date)
-            url += f'/{end_date}'
-        url += '.json'
-        return self.make_request(url)
 
     def sleep_daterange(self, date=None, end_date=None, user_id=None):
         """
