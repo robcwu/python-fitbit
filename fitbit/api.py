@@ -738,8 +738,9 @@ adding in ecg data - options specified similar to API - beforeDate, afterDate, s
 
         params = {'limit': 10, 'offset': 0, key: date_string, 'sort': sort}
 """
-        url = "{0}/{1}/user/-/ecg/list.json?{encoded_query}".format(
-            *self._get_common_args(), options)
+        print(options)
+        url = "{0}/{1}/user/-/ecg/list.json?".format(*self._get_common_args())+options
+        print(url)
 
         return self.make_request(url)
 
