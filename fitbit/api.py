@@ -265,8 +265,7 @@ class Fitbit(object):
         kwargs['headers'] = headers
 
         method = kwargs.get('method', 'POST' if 'data' in kwargs else 'GET')
-        print(*args)
-        print(**kwargs)
+
         response = self.client.make_request(*args, **kwargs)
         if response.status_code == 202:
             return True
@@ -723,9 +722,17 @@ class Fitbit(object):
         print(url)
         return self.make_request(url)
 
-    def ecg(self, options):
+    def ecg(self, date=None, sort='desc', url=None):
+
         """
-adding in ecg data - options specified similar to API - beforeDate, afterDate, sort, limit
+
+
+        print(options)
+        url = "{0}/{1}/user/-/ecg/list.json?".format(*self._get_common_args())+options
+        print(url)
+
+        return self.make_request(url)
+        """
         if url:
             url = "{0}/{1}{uri}".format(*self._get_common_args(), uri=url[2:])
             return self.make_request(url)
@@ -740,13 +747,11 @@ adding in ecg data - options specified similar to API - beforeDate, afterDate, s
             key = 'afterDate'
 
         params = {'limit': 10, 'offset': 0, key: date_string, 'sort': sort}
-"""
-        print(options)
-        url = "{0}/{1}/user/-/ecg/list.json?".format(*self._get_common_args())+options
-        print(url)
+
+        url = "{0}/{1}/user/-/ecg/list.json?{encoded_query}".format(
+            *self._get_common_args(), encoded_query=urlencode(params))
 
         return self.make_request(url)
-
 
 
     def sleep_daterange(self, date=None, end_date=None, user_id=None):
