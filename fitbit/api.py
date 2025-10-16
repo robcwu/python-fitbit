@@ -265,6 +265,8 @@ class Fitbit(object):
         kwargs['headers'] = headers
 
         method = kwargs.get('method', 'POST' if 'data' in kwargs else 'GET')
+        print(*args)
+        print(**kwargs)
         response = self.client.make_request(*args, **kwargs)
         if response.status_code == 202:
             return True
@@ -718,6 +720,7 @@ class Fitbit(object):
 
         url = url + '/all.json'
 
+        print(url)
         return self.make_request(url)
 
     def ecg(self, options):
