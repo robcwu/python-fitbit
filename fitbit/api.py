@@ -720,20 +720,9 @@ class Fitbit(object):
 
         return self.make_request(url)
 
-    def ecg(self, date=None, sort='desc', url=None):
+    def ecg(self, options):
         """
-        The intraday time series extends the functionality of the regular time series, but returning data at a
-        more granular level for a single day, defaulting to 1 minute intervals. To access this feature, one must
-        fill out the Private Support form here (see https://dev.fitbit.com/docs/help/).
-        For details on the resources available and more information on how to get access, see:
-
-
-        https://dev.fitbit.com/build/reference/web-api/spo2/get-spo2-summary-by-date/
-        https://dev.fitbit.com/build/reference/web-api/spo2/get-spo2-summary-by-interval/
-        https://dev.fitbit.com/build/reference/web-api/intraday/get-spo2-intraday-by-date/
-        https://dev.fitbit.com/build/reference/web-api/intraday/get-spo2-intraday-by-interval/
-        """
-
+adding in ecg data - options specified similar to API - beforeDate, afterDate, sort, limit
         if url:
             url = "{0}/{1}{uri}".format(*self._get_common_args(), uri=url[2:])
             return self.make_request(url)
@@ -748,9 +737,9 @@ class Fitbit(object):
             key = 'afterDate'
 
         params = {'limit': 10, 'offset': 0, key: date_string, 'sort': sort}
-
+"""
         url = "{0}/{1}/user/-/ecg/list.json?{encoded_query}".format(
-            *self._get_common_args(), encoded_query=urlencode(params))
+            *self._get_common_args(), options)
 
         return self.make_request(url)
 
