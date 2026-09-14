@@ -718,9 +718,24 @@ class Fitbit(object):
         )
 
         url = url + '/all.json'
-
         print(url)
         return self.make_request(url)
+
+    def get_new_resource_start_end(self, resource, start_date, end_date):
+        """
+          https://dev.fitbit.com/build/reference/web-api/spo2/get-spo2-summary-by-interval/
+
+        """
+        url = "{0}/{1}/user/-/{resource}/date/{start_date}/{end_date}".format(
+             *self._get_common_args(),
+             resource=resource,
+             start_date=self._get_date_string(start_date),
+             end_date=self._get_date_string(end_date)
+        )
+        print(url)
+        return self.make_request(url)
+
+
 
     def ecg(self, date=None, sort='desc', url=None):
 
