@@ -732,6 +732,7 @@ class Fitbit(object):
              start_date=self._get_date_string(start_date),
              end_date=self._get_date_string(end_date)
         )
+        url = url + '.json'
         print(url)
         return self.make_request(url)
 
